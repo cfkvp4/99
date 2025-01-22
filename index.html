@@ -414,30 +414,61 @@
                    ticketPreviewContainer.innerHTML = currentTicketHTML;
                }
         }
+
+        // Función para calcular la próxima fecha del sorteo (Viernes 9 PM), con regla adicional de las 8pm
+          function calcularProximaFechaSorteo() {
+            const now = new Date();
+            let dayOfWeek = now.getDay(); // 0=Domingo, 1=Lunes, ..., 5=Viernes, 6=Sábado
+            let daysUntilFriday = (5 - dayOfWeek + 7) % 7; // Calcula los días hasta el próximo viernes
+
+            let nextFriday = new Date(now);
+            nextFriday.setDate(now.getDate() + daysUntilFriday);
+            nextFriday.setHours(21, 0, 0, 0); // Establece la hora a las 9 PM
+
+            // Si es viernes y la hora actual es después de las 8 PM, se cambia al siguiente viernes
+            if(dayOfWeek === 5 && now.getHours() >= 20) {
+                nextFriday.setDate(nextFriday.getDate() + 7);
+            }
+
+            //Formatea la fecha como "YYYY-MM-DD hh:mm"
+             const year = nextFriday.getFullYear();
+             const month = String(nextFriday.getMonth() + 1).padStart(2, '0'); // Mes es 0-indexed
+             const day = String(nextFriday.getDate()).padStart(2, '0');
+             const hours = String(nextFriday.getHours()).padStart(2, '0');
+             const minutes = String(nextFriday.getMinutes()).padStart(2, '0');
+
+             return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
         
-         function generarBoletoHTML(numero, secHash, explorerUrl, timestamp) {
+        function generarBoletoHTML(numero, secHash, txHash, timestamp) {
             const date = new Date(timestamp);
             const formattedDate = date.toLocaleDateString();
             const formattedTime = date.toLocaleTimeString();
+            const proximaFechaSorteo = calcularProximaFechaSorteo();
         
            currentTicketHTML = `
             <div class="ticket">
                 <h1>🎟️ Boleto de Lotería 🎟️</h1>
                  <p><strong>Fecha:</strong> <span id="fecha">${formattedDate}</span></p>
-                <p><strong>Hora:</strong> <span id="hora">${formattedTime}</span></p>
+                 <p><strong>Hora:</strong> <span id="hora">${formattedTime}</span></p>
+                 <p><strong><span style="font-weight: bold;">Precio: 25 Pesos</span></strong></p>
+                  <p><strong>Próximo Sorteo:</strong> <span id="proximoSorteo">${proximaFechaSorteo}</span></p>
+                 <p><strong><span style="font-weight: bold;">Premio mayor: 300 Pesos</span></strong></p>
+                 <p>Pronostica los últimos 4 dígitos del primer premio en base a la lotería Nacional "Sorteo Superior Viernes" sorteado Cada Viernes a las 10 PM. (Resultados).</p>
                 <p class="number">#${numero}</p>
                 <div class="footer">
                     <p><strong>SEC:</strong></p>
                     <p>${secHash}</p>
-                    <p><strong>REG:</strong></p>
-                    <p><a href="${explorerUrl}" target="_blank">${explorerUrl}</a></p>
+                    <p><strong>TX:</strong></p>
+                    <p>${txHash}</p>
                 </div>
                 <div class="rules">
                      <p><strong>Reglas:</strong></p>
-                     <p>Solo se permite un boleto por persona.</p>
                     <p>Guarda este boleto; lo necesitarás para reclamar tu premio.</p>
                    <p>La participación en la lotería es válida solo hasta la fecha y hora indicadas.</p>
-                    <p>El ganador será anunciado en basescan.org.</p>
+                     <p>Si no hay ganador, se acumula.</p>
+                     <p>Si hay mas de un ganador, según el premio, se divide entre los ganadores.</p>
+                    <p>Boletos comprados los viernes despues de las 8PM, participan para el proximo viernes (sorteo)</p>
                 </div>
             </div>
           `;
@@ -505,13 +536,12 @@
                 });
 
                 const timestamp = Date.now();
+                const explorerUrl = await getExplorerUrl(txHash);
 
-               const explorerUrl = await getExplorerUrl(txHash);
-                
+                 generarBoletoHTML(number, encryptedPhoneNumber, txHash, timestamp);
+
                 const historyItem = document.createElement("div");
                 historyItem.classList.add("history-item");
-
-                 generarBoletoHTML(number, encryptedPhoneNumber, explorerUrl, timestamp);
 
                 const copyButton = document.createElement("button");
                 copyButton.classList.add("copy-button");
