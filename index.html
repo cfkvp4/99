@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotería Dos Fantásticos</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+          body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .wallet-button {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            padding: 6px 10px;
+            font-size: 0.9em;
+            background: #f9d423;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .wallet-button:hover {
+            background: #ff9d2f;
+        }
+
+        .wallet-button span {
+            font-size: 0.9em;
+        }
+
+        .wallet-icon {
+            width: 10px;
+            height: 10px;
+            background: #0f0;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            text-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .number-circle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        input {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            text-align: center;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+         .phone-input {
+            width: 150px; /* Aumenta el ancho */
+            height: 40px;
+            font-size: 1em;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            margin-bottom: 10px;
+         }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #f9d423;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #ff9d2f;
+        }
+
+         .history {
+            margin-top: 30px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+         .history-item {
+            white-space: nowrap;
+            overflow-x: auto;
+            padding: 5px 0;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+          }
+
+        .copy-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 0.8em;
+            padding: 3px 5px;
+             border-radius: 4px;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+         .copy-button:hover {
+           background-color: rgba(255, 255, 255, 0.4);
+         }
+        .ticket-preview-container {
+           width: 100%; /* Ancho */
+           text-align: center;
+            margin-top: 20px; /* Espacio con el historial */
+            padding: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .toggle-ticket-button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #f9d423;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-ticket-button:hover {
+            background: #ff9d2f;
+        }
+         .ticket {
+            width: 58mm;
+            padding: 5px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 10px;
+            background: #fff;
+            color: #000;
+           /* margin-left: 10px; */
+            display: inline-block;
+            vertical-align: middle;
+        }
+         .ticket h1 {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .ticket p {
+             margin: 3px 0;
+             font-size: 8px;
+            word-wrap: break-word; /* Permite que el texto largo se ajuste */
+            word-break: break-word; /* Rompe palabras largas si es necesario */
+             white-space: normal; /*Permite que el texto se envuelva*/
+        }
+        .ticket .number {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 0;
+            color: #d9534f;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+         .ticket .footer {
+            margin-top: 5px;
+            font-size: 8px;
+             word-wrap: break-word;
+            word-break: break-word;
+        }
+         .ticket .footer p {
+             word-wrap: break-word;
+            word-break: break-word;
+            margin: 2px 0;
+        }
+        .ticket .footer a {
+            color: #000;
+            text-decoration: none;
+            word-wrap: break-word;
+            word-break: break-all; /* Rompe palabras en enlaces */
+             white-space: normal; /*Permite que el texto se envuelva*/
+        }
+        .ticket .rules {
+            margin-top: 5px;
+            font-size: 7px;
+            text-align: center;
+             word-wrap: break-word;
+            word-break: break-word;
+             white-space: normal; /*Permite que el texto se envuelva*/
+        }
+        .ticket .rules p{
+            margin: 2px 0;
+            word-wrap: break-word; /* Permite que el texto largo se ajuste */
+            word-break: break-word; /* Rompe palabras largas si es necesario */
+             white-space: normal; /*Permite que el texto se envuelva*/
+        }
+        .download-button{
+           background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 0.8em;
+            padding: 3px 5px;
+             border-radius: 4px;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .download-button:hover {
+             background-color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="connectWalletButton" class="wallet-button">
+            <span id="walletAddress">Connect Wallet</span>
+        </button>
+
+        <h1>Dos Fantásticos</h1>
+         <!-- Campos para el número de teléfono -->
+        <input type="password" class="phone-input" id="phoneNumberInput" placeholder="Teléfono (10 dígitos)">
+        <input type="text" class="phone-input" id="verifyPhoneNumberInput" placeholder="Verificar teléfono">
+        
+        <div class="number-circle">
+            <input type="text" maxlength="2" class="circle" id="digit1" placeholder="00">
+            <input type="text" maxlength="2" class="circle" id="digit2" placeholder="00">
+        </div>
+        
+        <button id="randomButton">Números Aleatorios</button>
+        <button id="buyButton">Buy</button>
+
+        <div class="history" id="history">
+            <h3>Historial</h3>
+            <div id="historyItems"></div>
+        </div>
+    </div>
+     <button id="toggleTicketPreview" class="toggle-ticket-button">Mostrar Boleto</button>
+    <div id="ticket-preview-container" class="ticket-preview-container hidden">
+        <!-- El contenido del ticket se insertará aquí -->
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // --- CONFIGURACIÓN INICIAL - FÁCIL DE EDITAR ---
+        const recipientWallet = "0xA20662A41C44F87212E6aA31A5bD176465782478"; // Dirección de la wallet receptora
+        const transactionValueWei = "0x174876E800"; // Valor de la transacción en wei (ej: 0.0000001 ETH = 0x174876E800)
+        const baseChainId = '0x8453'; // Chain ID de la red Base
+        const baseSepoliaChainId = '0x14a34'; // Chain ID de la red Base Sepolia
+        const baseExplorerUrl = "https://basescan.org/tx/"; // URL del explorador de bloques para la red Base
+        const baseSepoliaExplorerUrl = "https://sepolia.basescan.org/tx/"; // URL del explorador de bloques para la red Base Sepolia
+        // --- FIN DE LA CONFIGURACIÓN ---
+
+        const buyButton = document.getElementById("buyButton");
+        const connectWalletButton = document.getElementById("connectWalletButton");
+        const randomButton = document.getElementById("randomButton");
+        const historyItems = document.getElementById("historyItems");
+        const phoneNumberInput = document.getElementById("phoneNumberInput");
+        const verifyPhoneNumberInput = document.getElementById("verifyPhoneNumberInput");
+        let userWalletAddress = null;
+        let currentChainId = null;
+        const ticketPreviewContainer = document.getElementById('ticket-preview-container');
+        const toggleTicketPreviewButton = document.getElementById('toggleTicketPreview');
+        let currentTicketHTML = null;
+
+        // Función para validar que solo se ingresen números en los inputs de teléfono
+        function validateNumberInput(inputElement) {
+            inputElement.addEventListener("input", (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                 if(e.target.value.length > 10) {
+                    e.target.value = e.target.value.slice(0, 10);
+                }
+            });
+        }
+        
+         validateNumberInput(phoneNumberInput);
+         validateNumberInput(verifyPhoneNumberInput);
+
+        // Función para generar la URL del explorador de bloques según la red
+        function getExplorerUrl(txHash, chainId) {
+            if (chainId === baseChainId) {
+                return `${baseExplorerUrl}${txHash}`;
+            } else if (chainId === baseSepoliaChainId) {
+                return `${baseSepoliaExplorerUrl}${txHash}`;
+            } else {
+                return "#"; // En caso de que no coincida con ninguna red conocida
+            }
+         }
+        document.querySelectorAll(".circle").forEach(input => {
+            input.addEventListener("input", (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+        });
+        
+        randomButton.addEventListener("click", () => {
+            let num1 = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
+            let num2 = String(Math.floor(Math.random() * 99) + 1).padStart(2, '0');
+            document.getElementById("digit1").value = num1;
+            document.getElementById("digit2").value = num2;
+        });
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Copiado al portapapeles: " + text);
+            });
+        }
+        
+        connectWalletButton.addEventListener("click", async () => {
+            try {
+                if (!window.ethereum) {
+                    alert("Please install MetaMask to continue.");
+                    return;
+                }
+
+                const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+                userWalletAddress = accounts[0];
+                
+                // Obtener la cadena actual
+                currentChainId = await ethereum.request({ method: 'eth_chainId' });
+
+                // Cambiar a la red Base Sepolia si no está activa
+                 if(currentChainId !== baseChainId && currentChainId !== baseSepoliaChainId ){
+                    try {
+                    await ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: baseSepoliaChainId }], 
+                    });
+                     currentChainId = baseSepoliaChainId;
+                    } catch (switchError) {
+                    if (switchError.code === 4902) {
+                     try {
+                           await ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [
+                                    {
+                                    chainId: baseSepoliaChainId,
+                                    chainName: 'Base Sepolia Testnet',
+                                    nativeCurrency: {
+                                        name: 'ETH',
+                                        symbol: 'ETH',
+                                        decimals: 18
+                                    },
+                                    rpcUrls: ['https://sepolia.base.org'],
+                                    blockExplorerUrls: ['https://sepolia.basescan.org']
+                                    }
+                                ]
+                            });
+                              currentChainId = baseSepoliaChainId;
+                            } catch (addError) {
+                            console.error("Error al agregar la red:", addError);
+                            alert("Error al agregar la red. Por favor, verifica tu conexión.");
+                        }
+                     } else{
+                        console.error("Error al cambiar la red:", switchError);
+                        alert("Error al cambiar de red. Por favor, verifica tu conexión.");
+                    }
+                    }
+                 }
+             
+               const walletIcon = document.createElement("div");
+                walletIcon.classList.add("wallet-icon");
+                 const walletAddress = document.getElementById("walletAddress");
+                 walletAddress.textContent = `${userWalletAddress.slice(0, 4)}...${userWalletAddress.slice(-4)}`;
+                 walletAddress.prepend(walletIcon);
+
+                 } catch (error) {
+                    console.error("Error connecting wallet:", error);
+                    alert("There was an error connecting the wallet.");
+            }
+        });
+
+        // Función para encriptar con SHA-256 y sal
+        async function sha256WithSalt(text) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(text + "MCA"); // Añadir la sal "MCA" al final
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+          function toggleTicketPreview() {
+             ticketPreviewContainer.classList.toggle('hidden');
+             toggleTicketPreviewButton.textContent = ticketPreviewContainer.classList.contains('hidden') ? "Mostrar Boleto" : "Ocultar Boleto";
+              if(!ticketPreviewContainer.classList.contains('hidden') && currentTicketHTML){
+                   ticketPreviewContainer.innerHTML = currentTicketHTML;
+               }
+        }
+        
+         function generarBoletoHTML(numero, secHash, explorerUrl, timestamp) {
+            const date = new Date(timestamp);
+            const formattedDate = date.toLocaleDateString();
+            const formattedTime = date.toLocaleTimeString();
+        
+           currentTicketHTML = `
+            <div class="ticket">
+                <h1>🎟️ Boleto de Lotería 🎟️</h1>
+                 <p><strong>Fecha:</strong> <span id="fecha">${formattedDate}</span></p>
+                <p><strong>Hora:</strong> <span id="hora">${formattedTime}</span></p>
+                <p class="number">#${numero}</p>
+                <div class="footer">
+                    <p><strong>SEC:</strong></p>
+                    <p>${secHash}</p>
+                    <p><strong>REG:</strong></p>
+                    <p><a href="${explorerUrl}" target="_blank">${explorerUrl}</a></p>
+                </div>
+                <div class="rules">
+                     <p><strong>Reglas:</strong></p>
+                     <p>Solo se permite un boleto por persona.</p>
+                    <p>Guarda este boleto; lo necesitarás para reclamar tu premio.</p>
+                   <p>La participación en la lotería es válida solo hasta la fecha y hora indicadas.</p>
+                    <p>El ganador será anunciado en basescan.org.</p>
+                </div>
+            </div>
+          `;
+            return "";
+        }
+        
+       function descargarTicket(ticketElement) {
+            // Extrae el número del boleto del elemento con la clase .number
+            const numeroElement = ticketElement.querySelector('.number');
+            const numero = numeroElement ? numeroElement.textContent.replace('#', '') : 'boleto'; // Si no encuentra el numero utiliza 'boleto' como nombre
+          
+            html2canvas(ticketElement).then(function(canvas) {
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `boleto_loteria_${numero}.png`; // Usa el número en el nombre del archivo
+                link.click();
+            });
+        }
+
+        toggleTicketPreviewButton.addEventListener('click', toggleTicketPreview);
+         buyButton.addEventListener("click", async () => {
+           try {
+                if (!userWalletAddress) {
+                   alert("Por favor, conecta tu wallet primero.");
+                   return;
+               }
+    
+               if(currentChainId !== baseChainId && currentChainId !== baseSepoliaChainId){
+                   alert("Por favor, cambia a la red Base o Base Sepolia.");
+                   return;
+               }
+
+                const phoneNumber = phoneNumberInput.value;
+                const verifyPhoneNumber = verifyPhoneNumberInput.value;
+        
+                 // Verificar si los números de teléfono coinciden (opcional)
+                if(phoneNumber && verifyPhoneNumber && phoneNumber !== verifyPhoneNumber) {
+                     alert("Los números de teléfono no coinciden. Por favor, verifique su entrada.");
+                        return;
+                   }
+
+                const number = [
+                    document.getElementById("digit1").value || "00",
+                    document.getElementById("digit2").value || "00",
+                ].join("");
+
+                // Encriptar el número de teléfono usando SHA-256 con la sal "MCA"
+                const encryptedPhoneNumber = await sha256WithSalt(phoneNumber);
+
+                 // Concatenar el número de lotería y el hash del número de teléfono con "#" y "-"
+                const transactionDataString = `0x#${number}-${encryptedPhoneNumber}`;
+
+
+                // Codificar la cadena completa como UTF-8 para que se interprete como texto en la cadena de bloques
+                 const encoder = new TextEncoder();
+                const transactionData = Array.from(encoder.encode(transactionDataString));
+
+                 const transactionParameters = {
+                    to: recipientWallet,
+                    from: userWalletAddress,
+                    value: transactionValueWei,
+                     data: `0x${transactionData.map(byte => byte.toString(16).padStart(2, '0')).join('')}` // Enviar como hexadecimal
+
+                };
+        
+                const txHash = await ethereum.request({
+                    method: "eth_sendTransaction",
+                    params: [transactionParameters]
+                });
+
+                const timestamp = Date.now();
+
+                const explorerUrl = getExplorerUrl(txHash, currentChainId);
+        
+                const historyItem = document.createElement("div");
+                historyItem.classList.add("history-item");
+
+                 generarBoletoHTML(number, encryptedPhoneNumber, explorerUrl, timestamp);
+
+                const copyButton = document.createElement("button");
+                copyButton.classList.add("copy-button");
+                copyButton.textContent = "Copiar Data + Link";
+
+                copyButton.addEventListener("click", () => {
+                    copyToClipboard(`Data: ${transactionDataString} | Link: ${explorerUrl}`);
+                });
+                
+                const downloadButton = document.createElement("button");
+                 downloadButton.classList.add("download-button");
+                  downloadButton.textContent = "Descargar Boleto";
+
+                downloadButton.addEventListener("click", () => {
+                      descargarTicket(ticketPreviewContainer.querySelector('.ticket'));
+                  });
+
+
+                historyItem.innerHTML = `Número: ${number} | Teléfono Hash: ${encryptedPhoneNumber} | <a href="${explorerUrl}" target="_blank" style="color: #4CAF50; text-decoration: underline;">Ver en cadena</a>`;
+                historyItem.appendChild(copyButton);
+                historyItem.appendChild(downloadButton);
+
+                historyItems.appendChild(historyItem);
+
+                   if(!ticketPreviewContainer.classList.contains('hidden') && currentTicketHTML){
+                       ticketPreviewContainer.innerHTML = currentTicketHTML;
+                   }
+
+                alert("¡Transacción exitosa! TxHash: " + txHash);
+        
+                document.getElementById("digit1").value = "";
+                document.getElementById("digit2").value = "";
+                 phoneNumberInput.value = ""; // Limpia el campo de número de teléfono
+                 verifyPhoneNumberInput.value = "";
+           } catch (error) {
+               console.error("Error al comprar el boleto:", error);
+               alert(`Error: ${error.message || "Desconocido"}`);
+           }
+       });
+    </script>
+</body>
+</html>
